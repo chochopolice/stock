@@ -1,1 +1,71 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>日本株購入検討 - 銘柄入力</title>
+  <link rel="stylesheet" href="./styles.css" />
 
+  <!-- Fuse.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>日本株購入検討</h1>
+      <p class="sub">銘柄名 or 証券コードを入力して送信してください（ゆるい入力でも候補補正します）</p>
+    </header>
+
+    <section class="card">
+      <label for="tickerInput" class="label">銘柄（名称 / コード）</label>
+      <div class="row">
+        <input id="tickerInput" class="input" type="text" placeholder="例：三菱重 / 7011 / トヨタ" autocomplete="off" />
+        <button id="btnResolve" class="btn secondary" type="button">候補検索</button>
+        <button id="btnAnalyze" class="btn" type="button">送信</button>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="asOf" class="label small">評価日（任意）</label>
+          <input id="asOf" class="input small" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="mode" class="label small">モード（任意）</label>
+          <select id="mode" class="input small">
+            <option value="B" selected>B（標準）</option>
+            <option value="A">A（詳細）</option>
+            <option value="C">C（簡易）</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hint">
+        <span id="dictStatus">銘柄辞書: 読み込み中…</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>候補</h2>
+      <p class="sub">入力に近い候補を表示します。候補をクリックすると確定します。</p>
+      <div id="candidates" class="candidates"></div>
+
+      <div class="resolved">
+        <div><span class="badge">確定</span> <span id="resolvedText">未選択</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>分析結果</h2>
+      <p class="sub">APIが未設定の場合は、ここにエラーが表示されます。</p>
+      <pre id="result" class="result">(まだ結果はありません)</pre>
+    </section>
+
+    <footer class="footer">
+      <small>※ APIエンドポイントは app.js の API_BASE_URL を設定してください。</small>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
