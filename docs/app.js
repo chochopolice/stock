@@ -179,8 +179,9 @@ async function init() {
     $dictStatus.textContent = "銘柄辞書: 読み込み中…";
     const res = await fetch(TICKER_DICT_PATH, { cache: "no-store" });
     if (!res.ok) throw new Error(`辞書の読み込みに失敗: HTTP ${res.status}`);
-    tickerDict = await res.json();
-
+    const raw = await res.json();
+    tickerDict = Array.isArray(raw) ? raw : (raw.data || []);
+    
     if (!Array.isArray(tickerDict)) throw new Error("tickers_jp.json が配列ではありません。");
 
     fuse = new Fuse(tickerDict, FUSE_OPTIONS);
