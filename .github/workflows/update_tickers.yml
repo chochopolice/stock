@@ -1,0 +1,48 @@
+name: Update tickers_jp.json from JPX
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # 毎日 01:30 UTC（日本時間 10:30）に実行
+    # JPXは前月末データを「毎月第3営業日 午前9時以降」に掲載 :contentReference[oaicite:2]{index=2}
+    # → 月次ピンポイントより「毎日実行＋差分がある時だけコミット」が初心者運用で安定
+    - cron: "30 1 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas xlrd requests
+
+      - name: Update tickers
+        run: |
+          python scripts/update_tickers.py
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 差分がなければ何もしない
+          if git diff --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+
+          git add docs/tickers_jp.json
+          git commit -m "chore: update tickers_jp.json"
+          git push
