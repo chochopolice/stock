@@ -152,7 +152,7 @@ async function callAnalyzeApi(payload) {
     throw new Error("API_BASE_URL が未設定です。app.js の先頭でAPI GatewayのURLを設定してください。");
   }
 
-  const url = `${API_BASE_URL.replace(/\/$/, "")}/analyze`;
+  const url = `${API_BASE_URL}/analyze`;
 
   const res = await fetch(url, {
     method: "POST",
