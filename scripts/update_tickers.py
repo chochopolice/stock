@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 import requests
 import pandas as pd
+from io import BytesIO
 
 # JPX「東証上場銘柄一覧」Excel（現時点での直リンク例）
 # ※JPX側でURLが変わる可能性はあるので、その場合はJPXページから差し替え :contentReference[oaicite:4]{index=4}
@@ -40,8 +41,9 @@ def main():
 
     # .xls のため xlrd を利用（pandas + xlrd）
     # JPXのファイルはシート名が "Sheet1" のことが多い（変わる場合あり）
-    df = pd.read_excel(xls_bytes, sheet_name=0, engine="xlrd")
-
+    # df = pd.read_excel(xls_bytes, sheet_name=0, engine="xlrd")
+    df = pd.read_excel(BytesIO(xls_bytes), sheet_name=0, engine="xlrd")
+    
     # JPXの列名は日本語。代表的には「コード」「銘柄名」「市場・商品区分」「33業種区分」等が入る。
     # 列名が変わっても動くように、候補で吸収する。
     def pick_col(candidates):
