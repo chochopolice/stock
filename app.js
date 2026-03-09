@@ -4,7 +4,7 @@
 
 // ★ここをあなたのAPI Gatewayエンドポイントに差し替えてください
 // 例: "https://xxxx.execute-api.ap-northeast-1.amazonaws.com"
-const API_BASE_URL = "https://1v9ywaww4i.execute-api.us-east-1.amazonaws.com"; // 未設定なら空のまま（その場合は送信時にエラー表示）
+const API_BASE_URL = "https://1v9ywaww4i.execute-api.us-east-1.amazonaws.com/analyze"; // 未設定なら空のまま（その場合は送信時にエラー表示）
 
 const TICKER_DICT_PATH = "./tickers_jp.json";
 
