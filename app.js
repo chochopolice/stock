@@ -157,9 +157,11 @@ async function callAnalyzeApi(payload) {
   const res = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
-     body: JSON.stringify({
-    ticker: resolved.name
-  })
+      body: JSON.stringify({
+         ticker: resolved.name,
+         asOf: payload.asOf || null,
+         // mode: payload.options?.mode || "B"
+      })
   });
 
   const text = await res.text();
