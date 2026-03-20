@@ -291,7 +291,7 @@ $btnResolve.addEventListener("click", () => {
 
   if (r) {
     resolved = { code: r.code, name: r.name };
-    $resolvedText.textContent = `${r.code} ${r.name}`;
+   // $resolvedText.textContent = `${r.code} ${r.name}`;
     setResult("(候補を表示しました。必要なら候補をクリックして変更できます)");
   } else {
     resolved = null;
@@ -320,8 +320,8 @@ $btnAnalyze.addEventListener("click", async () => {
         setResult("候補が見つからないため送信できません。", true);
         return;
       }
-//      resolved = { code: r.code, name: r.name };
-//      $resolvedText.textContent = `${r.code} ${r.name}`;
+      resolved = { code: r.code, name: r.name };
+      $resolvedText.textContent = `${r.code} ${r.name}`;
     }
 
     const payload = {
