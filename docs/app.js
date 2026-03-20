@@ -125,17 +125,6 @@ function setResult(objOrText, isError = false) {
   `;
 }
 
-// ============================
-// ユーティリティ
-// ============================
-function setResult(objOrText, isError = false) {
-  if (typeof objOrText === "string") {
-    $result.textContent = objOrText;
-  } else {
-    $result.textContent = JSON.stringify(objOrText, null, 2);
-  }
-  $result.classList.toggle("error", isError);
-}
 function normalizeQuery(q) {
   if (!q) return "";
   let s = q.trim();
