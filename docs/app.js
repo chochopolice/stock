@@ -284,11 +284,11 @@ async function init() {
 $btnResolve.addEventListener("click", () => {
   const q = $input.value;
   const { resolved: r, candidates } = resolveTicker(q);
-
+  $btnAnalyze.disabled = false;
   renderCandidates(candidates);
 
   if (r) {
-    resolved = { code: r.code, name: r.name };
+   // resolved = { code: r.code, name: r.name };
    // $resolvedText.textContent = `${r.code} ${r.name}`; //候補が1でもユーザに選択させる
     setResult("(候補を表示しました。必要なら候補をクリックして変更できます)");
   } else {
