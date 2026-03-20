@@ -32,7 +32,7 @@ const $resolvedText = document.getElementById("resolvedText");
 const $dictStatus = document.getElementById("dictStatus");
 const $result = document.getElementById("result");
 const $asOf = document.getElementById("asOf");
-//const $mode = document.getElementById("mode"); //モードは有料版などの時に開放
+const $mode = document.getElementById("mode");
 
 // ============================
 // 状態
@@ -82,9 +82,9 @@ function setResult(objOrText, isError = false) {
   $result.innerHTML = `
     <div style="font-family:sans-serif; line-height:1.6; padding:4px 0;">
 
-      <div style="font-size:0.82em; color:#9ca3af; margin-bottom:4px;">${escapeHtml(get("評価日："))}</div>
+      <div style="display:flex; font-size:0.92em; color:#9ca3af; margin-bottom:4px;">${escapeHtml(get("評価日："))}</div>
 
-      <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px;">
+      <div style="display:flex; align-items:flex-start; gap:4px; margin-bottom:6px;">
         <span style="font-size:1.1em; font-weight:bold;">${escapeHtml(objOrText.ticker)}</span>
         <span style="font-size:1.3em; font-weight:bold; color:#e5e7eb;">${escapeHtml(get("現在株価："))}</span>
       </div>
@@ -94,9 +94,9 @@ function setResult(objOrText, isError = false) {
       </div>
 
       <div style="margin-bottom:10px;">
-        <div style="font-size:0.78em; color:#9ca3af; margin-bottom:4px;">スコア内訳</div>
+        <div style="font-size:0.98em; color:#9ca3af; margin-bottom:4px;">スコア内訳</div>
         ${[["テクニカル", techScore, 12], ["ファンダメンタル", fundScore, 12], ["外部要因", extScore, 6]].map(([label, score, max]) => `
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;">
+          <div style="display:flex; align-items:center; gap:3px; margin-bottom:3px;">
             <div style="width:100px; font-size:0.82em; color:#9ca3af;">${label}</div>
             <div style="flex:1; background:#1f2937; border-radius:3px; height:6px;">
               <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:6px; border-radius:3px;"></div>
@@ -104,7 +104,7 @@ function setResult(objOrText, isError = false) {
             <div style="width:44px; text-align:right; font-size:0.82em; font-weight:bold; color:#e5e7eb;">${score} / ${max}</div>
           </div>
         `).join("")}
-        <div style="text-align:right; font-size:0.85em; margin-top:4px; color:#9ca3af;">
+        <div style=" font-size:0.85em; margin-top:4px; color:#9ca3af;">
           総合：<strong style="color:${scoreColor(total, 30)};">${total} / 30</strong>
         </div>
       </div>
@@ -233,7 +233,7 @@ async function callAnalyzeApi(payload) {
       ticker: resolved.name,
       code: resolved.code,
       asOf: payload.asOf || null,
-      //mode: payload.options?.mode || "B"//モードは有料版などの時に開放
+      mode: payload.options?.mode || "B"
     })
   });
 
@@ -328,7 +328,7 @@ $btnAnalyze.addEventListener("click", async () => {
       query: q,
       resolved: { ...resolved },
       asOf: $asOf.value || null,
-      //options: { mode: $mode.value || "B" } //モードは有料版などの時に開放
+      options: { mode: $mode.value || "B" }
     };
 
     setResult("APIに送信中…");
