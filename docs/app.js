@@ -297,7 +297,7 @@ $btnResolve.addEventListener("click", () => {
 });
 
 $btnAnalyze.addEventListener("click", async () => {
-  $btnAnalyze.disabled = false;
+//  $btnAnalyze.disabled = false;
   try {
     const q = $input.value;
     if (!q || !q.trim()) {
