@@ -21,7 +21,6 @@
       <div class="row">
         <input id="tickerInput" class="input" type="text" placeholder="例：三菱重 / 7011 / トヨタ" autocomplete="off" />
         <button id="btnResolve" class="btn secondary" type="button">候補検索</button>
-        <button id="btnAnalyze" class="btn" type="button">送信</button>
       </div>
 
       <div class="row2">
@@ -51,7 +50,8 @@
       <div id="candidates" class="candidates"></div>
 
       <div class="resolved">
-        <div><span class="badge">確定</span> <span id="resolvedText">未選択</span></div>
+        <div><span class="badge" style="size:3px; color:#993333">確定</span> <span id="resolvedText" style="color:#993333">未選択</span></div>
+        <button id="btnAnalyze" class="btn" type="button">送信</button>
       </div>
     </section>
 
