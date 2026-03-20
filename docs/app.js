@@ -170,6 +170,7 @@ function renderCandidates(items) {
       <div class="code">選択</div>
     `;
     div.addEventListener("click", () => {
+      $btnAnalyze.disabled = false;
       resolved = { code: item.code, name: item.name };
       $resolvedText.textContent = `${item.code} ${item.name}`;
       setResult("(確定しました。送信を押すとAPIに投げます)");
@@ -286,7 +287,6 @@ $btnResolve.addEventListener("click", () => {
   const { resolved: r, candidates } = resolveTicker(q);
   renderCandidates(candidates);
   if (r) {
-    $btnAnalyze.disabled = false;
     // resolved = { code: r.code, name: r.name };
    // $resolvedText.textContent = `${r.code} ${r.name}`; //候補が1でもユーザに選択させる
     resolved = null;
