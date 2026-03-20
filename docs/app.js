@@ -45,12 +45,84 @@ let resolved = null;
 // ユーティリティ
 // ============================
 function setResult(objOrText, isError = false) {
-  if (typeof objOrText === "string") {
-    $result.textContent = objOrText;
-  } else {
-    $result.textContent = JSON.stringify(objOrText, null, 2);
-  }
   $result.classList.toggle("error", isError);
+
+  if (typeof objOrText === "string" || isError) {
+    $result.innerHTML = "";
+    $result.textContent = typeof objOrText === "string" ? objOrText : JSON.stringify(objOrText, null, 2);
+    return;
+  }
+
+  const comment = objOrText?.comment;
+  if (!comment) {
+    $result.textContent = JSON.stringify(objOrText, null, 2);
+    return;
+  }
+
+  const lines = comment.split("\n").map(l => l.trim()).filter(l => l);
+  const get = (label) => {
+    const line = lines.find(l => l.startsWith(label));
+    return line ? line.replace(label, "").trim() : "—";
+  };
+
+  const scoreColor = (score, max) => {
+    const ratio = score / max;
+    if (ratio >= 0.7) return "#4caf50";
+    if (ratio >= 0.4) return "#ff9800";
+    return "#f44336";
+  };
+
+  const verdict = get("最終判定：");
+  const verdictColor = verdict === "買い" ? "#4caf50" : verdict === "保留" ? "#ff9800" : "#f44336";
+  const total = parseInt(get("総合スコア：")) || 0;
+  const techScore = parseInt(get("テクニカル：")) || 0;
+  const fundScore = parseInt(get("ファンダメンタル：")) || 0;
+  const extScore = parseInt(get("外部要因：")) || 0;
+
+  $result.innerHTML = `
+    <div style="font-family:sans-serif; line-height:1.8; padding:4px 0;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;">
+        <div>
+          <span style="font-size:1.1em; font-weight:bold;">${escapeHtml(objOrText.ticker)}</span>
+          <span style="margin-left:12px; color:#888; font-size:0.85em;">${escapeHtml(get("評価日："))}</span>
+        </div>
+        <div style="font-size:1.4em; font-weight:bold; color:#e5e7eb;">${escapeHtml(get("現在株価："))}</div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <span style="background:#1e3a5f; color:#60a5fa; padding:2px 10px; border-radius:12px; font-size:0.85em;">${escapeHtml(get("区分："))}</span>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:0.8em; color:#9ca3af; margin-bottom:6px;">スコア内訳</div>
+        ${[["テクニカル", techScore, 12], ["ファンダメンタル", fundScore, 12], ["外部要因", extScore, 6]].map(([label, score, max]) => `
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <div style="width:110px; font-size:0.85em; color:#9ca3af;">${label}</div>
+            <div style="flex:1; background:#1f2937; border-radius:4px; height:8px;">
+              <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:8px; border-radius:4px; transition:width 0.3s;"></div>
+            </div>
+            <div style="width:50px; text-align:right; font-size:0.85em; font-weight:bold; color:#e5e7eb;">${score} / ${max}</div>
+          </div>
+        `).join("")}
+        <div style="text-align:right; font-size:0.9em; margin-top:6px; color:#9ca3af;">
+          総合スコア：<strong style="color:${scoreColor(total, 30)}; font-size:1.1em;">${total} / 30</strong>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:16px;">
+        <span style="background:${verdictColor}; color:#fff; padding:6px 28px; border-radius:20px; font-size:1.1em; font-weight:bold;">
+          ${escapeHtml(verdict)}
+        </span>
+      </div>
+
+      <div style="background:#0f172a; border:1px solid #1f2937; border-radius:8px; padding:10px 14px; font-size:0.88em; line-height:2.2;">
+        <div>📌 本命買い：<strong style="color:#e5e7eb;">${escapeHtml(get("本命買い："))}</strong></div>
+        <div>📊 分割買い：<strong style="color:#e5e7eb;">${escapeHtml(get("分割買い："))}</strong></div>
+        <div>👀 様子見：<strong style="color:#e5e7eb;">${escapeHtml(get("様子見："))}</strong></div>
+        <div>⚠️ 割高警戒：<strong style="color:#e5e7eb;">${escapeHtml(get("割高警戒："))}</strong></div>
+      </div>
+    </div>
+  `;
 }
 
 function normalizeQuery(q) {
@@ -157,9 +229,12 @@ async function callAnalyzeApi(payload) {
   const res = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
-     body: JSON.stringify({
-    ticker: resolved.name
-  })
+    body: JSON.stringify({
+      ticker: resolved.name,
+      code: resolved.code,
+      asOf: payload.asOf || null,
+      mode: payload.options?.mode || "B"
+    })
   });
 
   const text = await res.text();
