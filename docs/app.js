@@ -288,7 +288,6 @@ $btnResolve.addEventListener("click", () => {
   if (r) {
    // resolved = { code: r.code, name: r.name };
    // $resolvedText.textContent = `${r.code} ${r.name}`; //候補が1でもユーザに選択させる
-    $btnAnalyze.disabled = false;
     setResult("(候補を表示しました。必要なら候補をクリックして変更できます)");
   } else {
     resolved = null;
@@ -298,6 +297,7 @@ $btnResolve.addEventListener("click", () => {
 });
 
 $btnAnalyze.addEventListener("click", async () => {
+  $btnAnalyze.disabled = false;
   try {
     const q = $input.value;
     if (!q || !q.trim()) {
