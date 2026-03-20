@@ -12,25 +12,23 @@
 <body>
   <div class="container">
     <header>
-      <h1>日本株購入検討ツール</h1>
+      <h1>日本株購入検討</h1>
       <p class="sub">銘柄名 or 証券コードを入力して送信してください（ゆるい入力でも候補補正します）</p>
     </header>
 
     <section class="card">
+      <label for="tickerInput" class="label">銘柄（名称 / コード）</label>
       <div class="row">
-        <label for="tickerInput" class="label">銘柄（名称 / コード）</label>
         <input id="tickerInput" class="input" type="text" placeholder="例：三菱重 / 7011 / トヨタ" autocomplete="off" />
         <button id="btnResolve" class="btn secondary" type="button">候補検索</button>
-        </div>
+      </div>
+
       <div class="row2">
         <div class="field">
           <label for="asOf" class="label small">評価日（任意）</label>
           <input id="asOf" class="input small" type="date" />
         </div>
-      <div class="hint">
-          <span id="dictStatus">銘柄辞書: 読み込み中…</span>
-        </div>
-<!--
+
         <div class="field">
           <label for="mode" class="label small">モード（任意）</label>
           <select id="mode" class="input small">
@@ -40,7 +38,9 @@
           </select>
         </div>
       </div>
--->
+
+      <div class="hint">
+        <span id="dictStatus">銘柄辞書: 読み込み中…</span>
       </div>
     </section>
 
@@ -50,24 +50,20 @@
       <div id="candidates" class="candidates"></div>
 
       <div class="resolved">
-        <div><span class="badge" style="color:#993333">確定</span> <span id="resolvedText">未選択</span></div>
-      <div class="row" style="margin-top:12px;">
-        <button id="btnAnalyze" class="btn" type="button">送信</button>
-      </div>
+        <div><span class="badge">確定</span> <span id="resolvedText">未選択</span></div>
+        <button id="btnAnalyze" class="btn" type="button" style="width:100%;">送信</button>
       </div>
     </section>
 
     <section class="card">
       <h2>分析結果</h2>
+      <p class="sub">APIが未設定の場合は、ここにエラーが表示されます。</p>
       <pre id="result" class="result">(まだ結果はありません)</pre>
     </section>
 
-    <br><br><br><br>
-    <a href="https://ig.me/m/chochoporice">お問い合わせはこちら</a>
-    <br><br><br><br>
-<footer style="font-size:11px; color:#888; text-align:center; padding:8px;">
-  © 2025 Toshiyuki Oosawa - 無断複製・商用利用禁止
-</footer>
+    <footer class="footer">
+      <small>※ APIエンドポイントは app.js の API_BASE_URL を設定してください。</small>
+    </footer>
   </div>
 
   <script src="./app.js"></script>
