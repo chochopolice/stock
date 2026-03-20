@@ -289,6 +289,8 @@ $btnResolve.addEventListener("click", () => {
     $btnAnalyze.disabled = false;
     // resolved = { code: r.code, name: r.name };
    // $resolvedText.textContent = `${r.code} ${r.name}`; //候補が1でもユーザに選択させる
+    resolved = null;
+    $resolvedText.textContent = "未選択";
     setResult("(候補を表示しました。必要なら候補をクリックして変更できます)");
   } else {
     resolved = null;
