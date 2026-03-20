@@ -269,7 +269,7 @@ async function init() {
     const dd = String(today.getDate()).padStart(2, "0");
     $asOf.value = `${yyyy}-${mm}-${dd}`;
 
-    setResult("(準備OK。銘柄を入力してください)");
+    setResult("(銘柄を入力してください)");
   } catch (e) {
     $dictStatus.textContent = "銘柄辞書: 読み込み失敗";
     setResult(String(e?.message || e), true);
