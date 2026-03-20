@@ -280,8 +280,8 @@ async function init() {
 // ============================
 // イベント
 // ============================
+$btnAnalyze.disabled = true;
 $btnResolve.addEventListener("click", () => {
-  $btnAnalyze.disabled = true;
   const q = $input.value;
   const { resolved: r, candidates } = resolveTicker(q);
   renderCandidates(candidates);
