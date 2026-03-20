@@ -80,42 +80,40 @@ function setResult(objOrText, isError = false) {
   const extScore = parseInt(get("外部要因：")) || 0;
 
   $result.innerHTML = `
-    <div style="font-family:sans-serif; line-height:1.6; padding:4px 0;">
+    <div style="font-size:0.88em; line-height:1.5;">
 
-      <div style="font-size:0.82em; color:#9ca3af; margin-bottom:4px;">${escapeHtml(get("評価日："))}</div>
+      <div style="color:#9ca3af; font-size:0.85em; margin-bottom:2px;">${escapeHtml(get("評価日："))}</div>
 
-      <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:6px;">
-        <span style="font-size:1.1em; font-weight:bold;">${escapeHtml(objOrText.ticker)}</span>
-        <span style="font-size:1.3em; font-weight:bold; color:#e5e7eb;">${escapeHtml(get("現在株価："))}</span>
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:6px;">
+        <span style="font-size:1.1em; font-weight:bold; color:#e5e7eb;">${escapeHtml(objOrText.ticker)}</span>
+        <span style="font-size:1.1em; font-weight:bold; color:#60a5fa;">${escapeHtml(get("現在株価："))}</span>
       </div>
 
-      <div style="margin-bottom:10px;">
-        <span style="background:#1e3a5f; color:#60a5fa; padding:2px 10px; border-radius:12px; font-size:0.82em;">${escapeHtml(get("区分："))}</span>
+      <div style="margin-bottom:8px;">
+        <span style="background:#1e3a5f; color:#60a5fa; padding:2px 8px; border-radius:10px; font-size:0.82em;">${escapeHtml(get("区分："))}</span>
       </div>
 
-      <div style="margin-bottom:10px;">
-        <div style="font-size:0.78em; color:#9ca3af; margin-bottom:4px;">スコア内訳</div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:0.78em; color:#6b7280; margin-bottom:3px;">スコア内訳</div>
         ${[["テクニカル", techScore, 12], ["ファンダメンタル", fundScore, 12], ["外部要因", extScore, 6]].map(([label, score, max]) => `
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:3px;">
-            <div style="width:100px; font-size:0.82em; color:#9ca3af;">${label}</div>
-            <div style="flex:1; background:#1f2937; border-radius:3px; height:6px;">
-              <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:6px; border-radius:3px;"></div>
+          <div style="display:grid; grid-template-columns:80px 1fr 40px; align-items:center; gap:6px; margin-bottom:3px;">
+            <div style="font-size:0.82em; color:#9ca3af; white-space:nowrap;">${label}</div>
+            <div style="background:#1f2937; border-radius:3px; height:5px;">
+              <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:5px; border-radius:3px;"></div>
             </div>
-            <div style="width:44px; text-align:right; font-size:0.82em; font-weight:bold; color:#e5e7eb;">${score} / ${max}</div>
+            <div style="font-size:0.82em; font-weight:bold; color:#e5e7eb; text-align:right;">${score}/${max}</div>
           </div>
         `).join("")}
-        <div style="text-align:right; font-size:0.85em; margin-top:4px; color:#9ca3af;">
-          総合：<strong style="color:${scoreColor(total, 30)};">${total} / 30</strong>
+        <div style="text-align:right; font-size:0.82em; color:#9ca3af; margin-top:2px;">
+          総合：<strong style="color:${scoreColor(total, 30)};">${total}/30</strong>
         </div>
       </div>
 
-      <div style="text-align:center; margin-bottom:10px;">
-        <span style="background:${verdictColor}; color:#fff; padding:5px 24px; border-radius:20px; font-size:1.05em; font-weight:bold;">
-          ${escapeHtml(verdict)}
-        </span>
+      <div style="display:flex; align-items:center; justify-content:center; margin-bottom:8px;">
+        <span style="background:${verdictColor}; color:#fff; padding:4px 20px; border-radius:16px; font-size:0.95em; font-weight:bold;">${escapeHtml(verdict)}</span>
       </div>
 
-      <div style="background:#0f172a; border:1px solid #1f2937; border-radius:8px; padding:8px 12px; font-size:0.85em; line-height:1.9;">
+      <div style="background:#0f172a; border:1px solid #1f2937; border-radius:8px; padding:8px 10px; line-height:1.8;">
         <div>📌 本命買い：<strong style="color:#e5e7eb;">${escapeHtml(get("本命買い："))}</strong></div>
         <div>📊 分割買い：<strong style="color:#e5e7eb;">${escapeHtml(get("分割買い："))}</strong></div>
         <div>👀 様子見：<strong style="color:#e5e7eb;">${escapeHtml(get("様子見："))}</strong></div>
