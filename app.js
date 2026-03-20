@@ -32,7 +32,7 @@ const $resolvedText = document.getElementById("resolvedText");
 const $dictStatus = document.getElementById("dictStatus");
 const $result = document.getElementById("result");
 const $asOf = document.getElementById("asOf");
-const $mode = document.getElementById("mode");
+//const $mode = document.getElementById("mode"); //モードは有料版などの時に開放
 
 // ============================
 // 状態
@@ -41,6 +41,89 @@ let tickerDict = [];
 let fuse = null;
 let resolved = null;
 
+// ============================
+// ユーティリティ
+// ============================
+function setResult(objOrText, isError = false) {
+  $result.classList.toggle("error", isError);
+
+  if (typeof objOrText === "string" || isError) {
+    $result.innerHTML = "";
+    $result.textContent = typeof objOrText === "string" ? objOrText : JSON.stringify(objOrText, null, 2);
+    return;
+  }
+
+  const comment = objOrText?.comment;
+  if (!comment) {
+    $result.textContent = JSON.stringify(objOrText, null, 2);
+    return;
+  }
+
+  const lines = comment.split("\n").map(l => l.trim()).filter(l => l);
+  const get = (label) => {
+    const line = lines.find(l => l.startsWith(label));
+    return line ? line.replace(label, "").trim() : "—";
+  };
+
+  const scoreColor = (score, max) => {
+    const ratio = score / max;
+    if (ratio >= 0.7) return "#4caf50";
+    if (ratio >= 0.4) return "#ff9800";
+    return "#f44336";
+  };
+
+  const verdict = get("最終判定：");
+  const verdictColor = verdict === "買い" ? "#4caf50" : verdict === "保留" ? "#ff9800" : "#f44336";
+  const total = parseInt(get("総合スコア：")) || 0;
+  const techScore = parseInt(get("テクニカル：")) || 0;
+  const fundScore = parseInt(get("ファンダメンタル：")) || 0;
+  const extScore = parseInt(get("外部要因：")) || 0;
+
+  $result.innerHTML = `
+    <div style="font-family:sans-serif; line-height:1.6; padding:4px 0;">
+
+      <div style="display:flex; font-size:0.92em; color:#9ca3af; margin-bottom:4px;">${escapeHtml(get("評価日："))}</div>
+
+      <div style="display:flex; align-items:flex-start; gap:4px; margin-bottom:6px;">
+        <span style="font-size:1.1em; font-weight:bold;">${escapeHtml(objOrText.ticker)}</span>
+        <span style="font-size:1.3em; font-weight:bold; color:#e5e7eb;">${escapeHtml(get("現在株価："))}</span>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <span style="background:#1e3a5f; color:#60a5fa; padding:2px 10px; border-radius:12px; font-size:0.82em;">${escapeHtml(get("区分："))}</span>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <div style="font-size:0.98em; color:#9ca3af; margin-bottom:4px;">スコア内訳</div>
+        ${[["テクニカル", techScore, 12], ["ファンダメンタル", fundScore, 12], ["外部要因", extScore, 6]].map(([label, score, max]) => `
+          <div style="display:flex; align-items:center; gap:3px; margin-bottom:3px;">
+            <div style="width:100px; font-size:0.82em; color:#9ca3af;">${label}</div>
+            <div style="flex:1; background:#1f2937; border-radius:3px; height:6px;">
+              <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:6px; border-radius:3px;"></div>
+            </div>
+            <div style="width:44px; text-align:right; font-size:0.82em; font-weight:bold; color:#e5e7eb;">${score} / ${max}</div>
+          </div>
+        `).join("")}
+        <div style=" font-size:0.85em; margin-top:4px; color:#9ca3af;">
+          総合：<strong style="color:${scoreColor(total, 30)};">${total} / 30</strong>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:10px;">
+        <span style="background:${verdictColor}; color:#fff; padding:5px 24px; border-radius:20px; font-size:1.05em; font-weight:bold;">
+          ${escapeHtml(verdict)}
+        </span>
+      </div>
+
+      <div style="background:#0f172a; border:1px solid #1f2937; border-radius:8px; padding:8px 12px; font-size:0.85em; line-height:1.9;">
+        <div>📌 本命買い：<strong style="color:#e5e7eb;">${escapeHtml(get("本命買い："))}</strong></div>
+        <div>📊 分割買い：<strong style="color:#e5e7eb;">${escapeHtml(get("分割買い："))}</strong></div>
+        <div>👀 様子見：<strong style="color:#e5e7eb;">${escapeHtml(get("様子見："))}</strong></div>
+        <div>⚠️ 割高警戒：<strong style="color:#e5e7eb;">${escapeHtml(get("割高警戒："))}</strong></div>
+      </div>
+    </div>
+  `;
+}
 
 function normalizeQuery(q) {
   if (!q) return "";
@@ -146,11 +229,12 @@ async function callAnalyzeApi(payload) {
   const res = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-         ticker: resolved.name,
-         asOf: payload.asOf || null,
-         // mode: payload.options?.mode || "B"
-      })
+    body: JSON.stringify({
+      ticker: resolved.name,
+      code: resolved.code,
+      asOf: payload.asOf || null,
+      //mode: payload.options?.mode || "B"//モードは有料版などの時に開放
+    })
   });
 
   const text = await res.text();
@@ -164,7 +248,6 @@ async function callAnalyzeApi(payload) {
   return data;
 }
 
-
 // ============================
 // 初期化
 // ============================
@@ -173,8 +256,9 @@ async function init() {
     $dictStatus.textContent = "銘柄辞書: 読み込み中…";
     const res = await fetch(TICKER_DICT_PATH, { cache: "no-store" });
     if (!res.ok) throw new Error(`辞書の読み込みに失敗: HTTP ${res.status}`);
-    tickerDict = await res.json();
-
+    const raw = await res.json();
+    tickerDict = Array.isArray(raw) ? raw : (raw.data || []);
+    
     if (!Array.isArray(tickerDict)) throw new Error("tickers_jp.json が配列ではありません。");
 
     fuse = new Fuse(tickerDict, FUSE_OPTIONS);
@@ -244,7 +328,7 @@ $btnAnalyze.addEventListener("click", async () => {
       query: q,
       resolved: { ...resolved },
       asOf: $asOf.value || null,
-      options: { mode: $mode.value || "B" }
+      //options: { mode: $mode.value || "B" } //モードは有料版などの時に開放
     };
 
     setResult("APIに送信中…");
