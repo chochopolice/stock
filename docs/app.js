@@ -80,7 +80,7 @@ function setResult(objOrText, isError = false) {
   const extScore = parseInt(get("外部要因：")) || 0;
 
   $result.innerHTML = `
-    <div style="font-size:0.88em; line-height:1.5;">
+    <div style="font-family:sans-serif; font-size:0.88em; line-height:1.5;">
 
       <div style="color:#9ca3af; font-size:0.85em; margin-bottom:2px;">${escapeHtml(get("評価日："))}</div>
 
@@ -97,7 +97,7 @@ function setResult(objOrText, isError = false) {
         <div style="font-size:0.78em; color:#6b7280; margin-bottom:3px;">スコア内訳</div>
         ${[["テクニカル", techScore, 12], ["ファンダメンタル", fundScore, 12], ["外部要因", extScore, 6]].map(([label, score, max]) => `
           <div style="display:grid; grid-template-columns:80px 1fr 40px; align-items:center; gap:6px; margin-bottom:3px;">
-            <div style="font-size:0.82em; color:#9ca3af; white-space:nowrap;">${label}</div>
+            <div style="font-size:0.85em; color:#9ca3af; white-space:nowrap;">${label}</div>
             <div style="background:#1f2937; border-radius:3px; height:5px;">
               <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:5px; border-radius:3px;"></div>
             </div>
@@ -299,7 +299,6 @@ $btnResolve.addEventListener("click", () => {
 });
 
 $btnAnalyze.addEventListener("click", async () => {
-$btnAnalyze.disabled = false;
   try {
     const q = $input.value;
     if (!q || !q.trim()) {
