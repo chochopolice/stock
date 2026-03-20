@@ -82,29 +82,26 @@ function setResult(objOrText, isError = false) {
   $result.innerHTML = `
     <div style="font-family:sans-serif; line-height:1.6; padding:4px 0;">
 
-      <p>評価日</p>
-      <div style="display:flex; font-size:0.92em; color:#9ca3af; margin-bottom:4px;">${escapeHtml(get("評価日："))}</div>
-
-      <p>銘柄</p>
+      <div style="display:flex; font-size:0.92em; color:#9ca3af; margin-bottom:4px;"><p>評価日</p>${escapeHtml(get("評価日："))}</div>
+      
       <div style="display:flex; align-items:flex-start; gap:4px; margin-bottom:6px;">
-        <span style="font-size:1.1em; font-weight:bold;">${escapeHtml(objOrText.ticker)}</span>
-      <p>終値</p>
-        <span style="font-size:1.3em; font-weight:bold; color:#e5e7eb;">${escapeHtml(get("現在株価："))}</span>
+        <span style="font-size:1.1em; font-weight:bold;"><p>銘柄</p>${escapeHtml(objOrText.ticker)}</span>
+        <span style="font-size:1.3em; font-weight:bold; color:#e5e7eb;"><p>終値</p>${escapeHtml(get("現在株価："))}</span>
       </div>
 
       <div style="margin-bottom:1px;">
-        <span style="background:#1e3a5f; color:#60a5fa; padding:2px 2px; border-radius:12px; font-size:0.82em;">${escapeHtml(get("区分："))}</span>
+        <span style="background:#1e3a5f; color:#60a5fa; border-radius:2px; font-size:0.82em;">${escapeHtml(get("区分："))}</span>
       </div>
 
-      <div style="margin-bottom:3px;">
-        <div style="font-size:0.98em; color:#9ca3af; margin-bottom:2px;">スコア内訳</div>
+      <div style="margin-bottom:1px;">
+        <div style="font-size:0.98em; color:#9ca3af; margin-bottom:1px;">スコア内訳</div>
         ${[["テクニカル", techScore, 12], ["ファンダメンタル", fundScore, 12], ["外部要因", extScore, 6]].map(([label, score, max]) => `
           <div style="display:flex; align-items:center; gap:1px; margin-bottom:1px;">
             <div style="width:100px; font-size:0.82em; color:#9ca3af;">${label}</div>
-            <div style="flex:1; background:#1f2937; border-radius:3px; height:6px;">
+            <div style="flex:1; background:#1f2937; border-radius:3px; height:2px;">
               <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:6px; border-radius:3px;"></div>
             </div>
-            <div style="width:44px; text-align:right; font-size:0.82em; font-weight:bold; color:#e5e7eb;">${score} / ${max}</div>
+            <div style="width:14px; text-align:right; font-size:0.82em; font-weight:bold; color:#e5e7eb;">${score} / ${max}</div>
           </div>
         `).join("")}
         <div style=" font-size:0.95em; margin-top:4px; color:#9ca3af;">
@@ -112,8 +109,8 @@ function setResult(objOrText, isError = false) {
         </div>
       </div>
 
-      <div style="text-align:center; margin-bottom:5px;">
-        <span style="background:${verdictColor}; color:#fff; padding:5px 4px; border-radius:20px; font-size:1.25em; font-weight:bold;">
+      <div style="text-align:center; margin-bottom:2px;">
+        <span style="background:${verdictColor}; color:#fff; padding:2px 1px; border-radius:2px; font-size:1.25em; font-weight:bold;">
           ${escapeHtml(verdict)}
         </span>
       </div>
