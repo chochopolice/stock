@@ -32,7 +32,7 @@ const $resolvedText = document.getElementById("resolvedText");
 const $dictStatus = document.getElementById("dictStatus");
 const $result = document.getElementById("result");
 const $asOf = document.getElementById("asOf");
-const $mode = document.getElementById("mode");
+//const $mode = document.getElementById("mode"); //モードは有料版などの時に開放
 
 // ============================
 // 状態
@@ -233,7 +233,7 @@ async function callAnalyzeApi(payload) {
       ticker: resolved.name,
       code: resolved.code,
       asOf: payload.asOf || null,
-      mode: payload.options?.mode || "B"
+      //mode: payload.options?.mode || "B"//モードは有料版などの時に開放
     })
   });
 
@@ -328,7 +328,7 @@ $btnAnalyze.addEventListener("click", async () => {
       query: q,
       resolved: { ...resolved },
       asOf: $asOf.value || null,
-      options: { mode: $mode.value || "B" }
+      //options: { mode: $mode.value || "B" } //モードは有料版などの時に開放
     };
 
     setResult("APIに送信中…");
