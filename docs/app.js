@@ -261,7 +261,7 @@ async function init() {
 
     fuse = new Fuse(tickerDict, FUSE_OPTIONS);
     $dictStatus.textContent = `銘柄辞書: 読み込み完了（${tickerDict.length}件）`;
-
+    $btnAnalyze.disabled = true;
     // 評価日デフォルト：今日
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -299,6 +299,7 @@ $btnResolve.addEventListener("click", () => {
 });
 
 $btnAnalyze.addEventListener("click", async () => {
+$btnAnalyze.disabled = false;
   try {
     const q = $input.value;
     if (!q || !q.trim()) {
