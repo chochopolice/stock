@@ -320,8 +320,8 @@ $btnAnalyze.addEventListener("click", async () => {
         setResult("候補が見つからないため送信できません。", true);
         return;
       }
-      resolved = { code: r.code, name: r.name };
-      $resolvedText.textContent = `${r.code} ${r.name}`;
+//      resolved = { code: r.code, name: r.name };
+//      $resolvedText.textContent = `${r.code} ${r.name}`;
     }
 
     const payload = {
