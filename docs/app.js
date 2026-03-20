@@ -170,10 +170,10 @@ function renderCandidates(items) {
       <div class="code">選択</div>
     `;
     div.addEventListener("click", () => {
-      $btnAnalyze.disabled = false;
       resolved = { code: item.code, name: item.name };
       $resolvedText.textContent = `${item.code} ${item.name}`;
       setResult("(確定しました。送信を押すとAPIに投げます)");
+      $btnAnalyze.disabled = false;
     });
     $candidates.appendChild(div);
   }
