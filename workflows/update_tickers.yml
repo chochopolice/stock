@@ -43,6 +43,6 @@ jobs:
             exit 0
           fi
 
-          git add docs/tickers_jp.json
+          git add data/tickers_jp.json
           git commit -m "chore: update tickers_jp.json"
           git push
