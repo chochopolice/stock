@@ -6,7 +6,7 @@
 // 例: "https://xxxx.execute-api.ap-northeast-1.amazonaws.com"
 const API_BASE_URL = "https://1v9ywaww4i.execute-api.us-east-1.amazonaws.com"; // 未設定なら空のまま（その場合は送信時にエラー表示）
 
-const TICKER_DICT_PATH = "./tickers_jp.json";
+const TICKER_DICT_PATH = "../data/tickers_jp.json";
 
 // Fuse検索設定（ゆるさはここで調整）
 const FUSE_OPTIONS = {
