@@ -9,7 +9,7 @@ from io import BytesIO
 # ※JPX側でURLが変わる可能性はあるので、その場合はJPXページから差し替え :contentReference[oaicite:4]{index=4}
 JPX_XLS_URL = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
 
-OUT_PATH = os.path.join("docs", "tickers_jp.json")
+OUT_PATH = os.path.join("data", "tickers_jp.json")
 
 def download_xls(url: str) -> bytes:
     r = requests.get(url, timeout=60)
