@@ -22,6 +22,6 @@ header h1{ margin:0 0 6px; font-size: 28px; }
 .code{ color:var(--muted); font-variant-numeric: tabular-nums; margin-left:12px; }
 .badge{ display:inline-block; background:#0f172a; border:1px solid var(--line); padding:4px 8px; border-radius:999px; color:var(--muted); font-size: 12px; margin-right:8px; }
 .resolved{ margin-top:12px; }
-.result{ white-space:pre-wrap; background:#0b1220; border:1px solid var(--line); border-radius:12px; padding:12px; color:var(--text); min-height:120px; }
+/* .result{ white-space:pre-wrap; background:#0b1220; border:1px solid var(--line); border-radius:12px; padding:12px; color:var(--text); min-height:120px; } */
 .footer{ margin-top:18px; color:var(--muted); }
 .error{ color: var(--danger); }
