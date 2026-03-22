@@ -3,361 +3,85 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>日本株購入検討 - 銘柄入力</title>
-  <style>
-    :root {
-      --bg: #07090f;
-      --bg2: #0d1117;
-      --card: #0f1620;
-      --card2: #131c2b;
-      --text: #e2e8f0;
-      --muted: #64748b;
-      --muted2: #94a3b8;
-      --line: #1e2d40;
-      --line2: #243447;
-      --accent: #3b82f6;
-      --accent2: #60a5fa;
-      --gold: #f59e0b;
-      --green: #10b981;
-      --danger: #f87171;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ── TOP BAR ── */
-    .topbar {
-      border-bottom: 1px solid var(--line);
-      background: rgba(7,9,15,0.9);
-      backdrop-filter: blur(12px);
-      position: sticky; top: 0; z-index: 100;
-      padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 52px;
-    }
-    .topbar-brand {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .topbar-logo {
-      width: 28px; height: 28px;
-      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 900; color: #fff; letter-spacing: -1px;
-    }
-    .topbar-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.03em; }
-    .topbar-right {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .topbar-tag {
-      font-size: 10px; padding: 2px 8px; border-radius: 99px;
-      border: 1px solid var(--line2); color: var(--muted2);
-      background: var(--card);
-    }
-    .topbar-dict {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; color: var(--muted);
-      background: var(--card2);
-      border: 1px solid var(--line2);
-      border-radius: 99px;
-      padding: 4px 10px;
-    }
-    .status-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--muted); flex-shrink: 0;
-      transition: background 0.3s;
-    }
-    .status-dot.ok  { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .status-dot.err { background: var(--danger); }
-
-    /* ── LAYOUT ── */
-    .page { max-width: 720px; margin: 0 auto; padding: 32px 16px 80px; }
-
-    /* ── HERO ── */
-    .hero { margin-bottom: 28px; }
-    .hero h1 {
-      font-size: 22px; font-weight: 700; color: var(--text);
-      margin-bottom: 6px; letter-spacing: -0.02em;
-    }
-    .hero h1 span { color: var(--accent2); }
-    .hero p { font-size: 13px; color: var(--muted2); line-height: 1.7; }
-
-    /* ── CARD ── */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: "";
-      position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
-    }
-    .card-header {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
-    }
-    .card-icon {
-      width: 30px; height: 30px; border-radius: 8px;
-      background: rgba(59,130,246,0.12);
-      border: 1px solid rgba(59,130,246,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-    }
-    .card-title { font-size: 13px; font-weight: 600; color: var(--muted2); letter-spacing: 0.05em; text-transform: uppercase; }
-
-    /* ── INPUT ── */
-    .input-wrap { position: relative; }
-    .input-wrap .input-icon {
-      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-      color: var(--muted); font-size: 15px; pointer-events: none;
-    }
-    .input {
-      width: 100%;
-      padding: 13px 14px 13px 40px;
-      border-radius: 10px;
-      border: 1px solid var(--line2);
-      background: var(--bg2);
-      color: var(--text);
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      font-family: inherit;
-    }
-    .input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-    }
-    .input::placeholder { color: var(--muted); }
-    .input.small {
-      padding: 10px 12px;
-      font-size: 13px;
-    }
-    input[type="date"].input.small { padding-left: 12px; }
-
-    /* ── ROW ── */
-    .row { display: flex; gap: 10px; align-items: stretch; }
-    .row .input-wrap { flex: 1; }
-    .row2 { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .label { font-size: 12px; color: var(--muted2); letter-spacing: 0.04em; }
-
-    /* ── BUTTONS ── */
-    .btn {
-      padding: 13px 18px;
-      border-radius: 10px;
-      border: none;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: opacity 0.15s, transform 0.1s;
-      letter-spacing: 0.03em;
-      font-family: inherit;
-    }
-    .btn:active { transform: scale(0.97); }
-    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-    .btn-primary {
-      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-      color: #fff;
-      box-shadow: 0 2px 12px rgba(59,130,246,0.3);
-    }
-    .btn-secondary {
-      background: var(--card2);
-      border: 1px solid var(--line2);
-      color: var(--muted2);
-    }
-    .btn-analyze {
-      width: 100%;
-      padding: 14px;
-      font-size: 15px;
-      background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: #fff;
-      border-radius: 12px;
-      border: none;
-      box-shadow: 0 4px 20px rgba(37,99,235,0.35);
-      margin-top: 4px;
-      cursor: pointer;
-      font-family: inherit;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    .btn-analyze:active  { transform: scale(0.98); }
-    .btn-analyze:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-
-    /* ── CANDIDATES ── */
-    .candidates { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
-    .candidate {
-      padding: 11px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: var(--bg2);
-      cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .candidate:hover { border-color: var(--accent); background: rgba(59,130,246,0.05); }
-    .candidate-name { font-size: 14px; font-weight: 500; }
-    .candidate-code {
-      font-size: 12px; color: var(--muted2);
-      font-variant-numeric: tabular-nums;
-      background: var(--card2); border: 1px solid var(--line2);
-      padding: 2px 8px; border-radius: 6px;
-    }
-    .candidate-select { font-size: 11px; color: var(--accent2); }
-
-    /* ── RESOLVED ── */
-    .resolved-bar {
-      background: var(--bg2);
-      border: 1px solid var(--line2);
-      border-radius: 10px;
-      padding: 12px 14px;
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 14px;
-    }
-    .badge {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
-      text-transform: uppercase;
-      background: rgba(59,130,246,0.12);
-      border: 1px solid rgba(59,130,246,0.25);
-      color: var(--accent2);
-      padding: 3px 8px; border-radius: 6px; white-space: nowrap;
-    }
-    #resolvedText { font-size: 14px; color: var(--muted2); }
-
-    /* ── RESULT ── */
-    .result-area {
-      background: var(--bg2);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px;
-      min-height: 120px;
-      color: var(--muted2);
-      font-size: 13px;
-    }
-    .result-area.error { color: var(--danger); }
-
-    /* ── FOOTER ── */
-    .contact-wrap { text-align: center; padding: 24px 0 8px; }
-    .contact-link {
-      font-size: 13px; color: var(--muted2);
-      text-decoration: none;
-      border: 1px solid var(--line2);
-      padding: 8px 18px; border-radius: 99px;
-      background: var(--card);
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .contact-link:hover { border-color: var(--accent); color: var(--accent2); }
-    .footer {
-      text-align: center; padding: 20px 0 0;
-      font-size: 11px; color: var(--muted);
-      border-top: 1px solid var(--line); margin-top: 8px;
-    }
-  </style>
+  <title>日本株購入検討ツール</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="topbar-brand">
-    <div class="topbar-logo">株</div>
-    <span class="topbar-title">JP Stock Analyzer</span>
-  </div>
-  <div class="topbar-right">
+  <!-- トップバー -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="icon">📈</div>
+      日本株購入検討ツール
+      <span class="topbar-badge">Beta</span>
+    </div>
     <div class="topbar-dict">
       <span class="status-dot" id="statusDot"></span>
       <span id="dictStatus">銘柄辞書: 読み込み中…</span>
     </div>
-    <span class="topbar-tag">Beta</span>
-  </div>
-</div>
-
-<div class="page">
-
-  <!-- HERO -->
-  <div class="hero">
-    <h1>日本株 <span>購入検討ツール</span></h1>
-    <p>銘柄名または証券コードを入力してください。ゆるい入力でも候補を自動補正します。</p>
   </div>
 
-  <!-- 銘柄入力 -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">🔍</div>
-      <span class="card-title">銘柄検索</span>
-    </div>
+  <div class="container">
 
-    <div class="row">
+    <!-- 銘柄入力 -->
+    <div class="card">
+      <div class="card-title">銘柄検索</div>
       <div class="input-wrap">
-        <span class="input-icon">◈</span>
         <input id="tickerInput" class="input" type="text"
           placeholder="例：三菱重 / 7011 / トヨタ" autocomplete="off" />
+        <button id="btnResolve" class="btn btn-secondary" type="button">候補検索</button>
       </div>
-      <button id="btnResolve" class="btn btn-secondary" type="button">候補検索</button>
-    </div>
-
-    <div class="row2">
-      <div class="field">
-        <label for="asOf" class="label">評価日（任意）</label>
-        <input id="asOf" class="input small" type="date" style="width:160px;" />
+      <div class="meta-row">
+        <div class="meta-field">
+          <span class="field-label">評価日（任意）</span>
+          <input id="asOf" class="input" type="date" />
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 候補 -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">📋</div>
-      <span class="card-title">候補一覧</span>
-    </div>
-    <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">候補をクリックして銘柄を確定してください</p>
-
-    <div id="candidates" class="candidates"></div>
-
-    <div class="resolved-bar">
-      <span class="badge">確定</span>
-      <span id="resolvedText">未選択</span>
+    <!-- 候補 -->
+    <div class="card">
+      <div class="card-title">候補一覧</div>
+      <p class="card-sub">入力に近い候補を表示します。候補をクリックして確定してください。</p>
+      <div id="candidates" class="candidates"></div>
+      <div class="resolved-bar">
+        <span class="badge">確定</span>
+        <span id="resolvedText">未選択</span>
+      </div>
+      <button id="btnAnalyze" class="btn-submit" type="button">📊 分析を実行する</button>
     </div>
 
-    <button id="btnAnalyze" class="btn-analyze" type="button">📊 分析を実行する</button>
-  </div>
-
-  <!-- 分析結果 -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">📈</div>
-      <span class="card-title">分析結果</span>
+    <!-- 分析結果 -->
+    <div class="card">
+      <div class="card-title">分析結果</div>
+      <p class="card-sub">選択した銘柄を評価します。評価には15秒程度かかります。</p>
+      <div class="result-area">
+        <div id="result">(まだ結果はありません)</div>
+      </div>
     </div>
-    <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">選択した銘柄を評価します。評価には15秒程度かかります。</p>
-    <div id="result" class="result-area">(まだ結果はありません)</div>
+
   </div>
 
-  <!-- CONTACT & FOOTER -->
+  <!-- お問い合わせ -->
   <div class="contact-wrap">
     <a href="https://ig.me/m/chochoporice" class="contact-link">📩 お問い合わせはこちら</a>
   </div>
   <footer class="footer">© 2025 Toshiyuki Oosawa — 無断複製・商用利用禁止</footer>
 
-</div>
-
-<script>
-  const dot = document.getElementById("statusDot");
-  const statusEl = document.getElementById("dictStatus");
-  new MutationObserver(() => {
-    const t = statusEl.textContent;
-    dot.className = t.includes("完了") ? "status-dot ok"
-                  : t.includes("失敗") ? "status-dot err"
-                  : "status-dot";
-  }).observe(statusEl, { childList: true, characterData: true, subtree: true });
-</script>
-<script src="./app.js"></script>
+  <!-- ステータスドット制御 -->
+  <script>
+    const _dot = document.getElementById("statusDot");
+    const _st  = document.getElementById("dictStatus");
+    new MutationObserver(() => {
+      const t = _st.textContent;
+      _dot.className = t.includes("完了") ? "status-dot ok"
+                     : t.includes("失敗") ? "status-dot err"
+                     : "status-dot";
+    }).observe(_st, { childList: true, characterData: true, subtree: true });
+  </script>
+  <script src="./app.js"></script>
 </body>
 </html>
