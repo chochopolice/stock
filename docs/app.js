@@ -90,21 +90,21 @@ function setResult(objOrText, isError = false) {
       </div>
 
       <div style="margin-bottom:8px;">
-        <span style="background:#1e3a5f; color:#60a5fa; padding:2px 8px; border-radius:10px; font-size:0.82em;">${escapeHtml(get("区分："))}</span>
+        <span style="background:#1e3a5f; color:#60a5fa; padding:2px 8px; border-radius:10px; font-size:0.95em;">${escapeHtml(get("区分："))}</span>
       </div>
 
       <div style="margin-bottom:8px;">
-        <div style="font-size:0.78em; color:#6b7280; margin-bottom:3px;">スコア内訳</div>
+        <div style="font-size:0.85em; color:#6b7280; margin-bottom:3px;">スコア内訳</div>
         ${[["テクニカル", techScore, 12], ["ファンダメンタル", fundScore, 12], ["外部要因", extScore, 6]].map(([label, score, max]) => `
           <div style="display:grid; grid-template-columns:80px 1fr 40px; align-items:center; gap:6px; margin-bottom:3px;">
             <div style="font-size:0.85em; color:#9ca3af; white-space:nowrap;">${label}</div>
             <div style="background:#1f2937; border-radius:3px; height:5px;">
               <div style="width:${Math.round(score / max * 100)}%; background:${scoreColor(score, max)}; height:5px; border-radius:3px;"></div>
             </div>
-            <div style="font-size:0.82em; font-weight:bold; color:#e5e7eb; text-align:right;">${score}/${max}</div>
+            <div style="font-size:0.85em; font-weight:bold; color:#e5e7eb; text-align:right;">${score}/${max}</div>
           </div>
         `).join("")}
-        <div style="text-align:right; font-size:0.82em; color:#9ca3af; margin-top:2px;">
+        <div style="text-align:right; font-size:0.95em; color:#9ca3af; margin-top:2px;">
           総合：<strong style="color:${scoreColor(total, 30)};">${total}/30</strong>
         </div>
       </div>
