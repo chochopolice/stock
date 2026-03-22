@@ -3,359 +3,111 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>日本株購入検討ツール</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <title>日本株購入検討 - 銘柄入力</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- Fuse.js (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #0b0f19;
-      --bg2:       #111827;
-      --bg3:       #1a2235;
-      --border:    #1f2f48;
-      --accent:    #3b82f6;
-      --accent2:   #1d4ed8;
-      --gold:      #f59e0b;
-      --green:     #22c55e;
-      --red:       #ef4444;
-      --text:      #e2e8f0;
-      --muted:     #64748b;
-      --muted2:    #94a3b8;
-      --radius:    10px;
-    }
-
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', 'Noto Sans JP', sans-serif;
-      font-size: 14px;
-      min-height: 100vh;
-    }
-
-    /* ── ヘッダー ── */
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 24px;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .topbar-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.05em;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: var(--text);
-    }
-    .topbar-logo .icon {
-      width: 28px; height: 28px;
-      background: linear-gradient(135deg, var(--accent), #6366f1);
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-    }
-    .topbar-badge {
-      font-size: 0.72em;
-      background: rgba(59,130,246,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(59,130,246,0.3);
-      padding: 2px 8px;
-      border-radius: 20px;
-    }
-    #dictStatus {
-      font-size: 0.78em;
-      color: var(--muted);
-    }
-
-    /* ── レイアウト ── */
-    .container {
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 28px 16px 60px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    /* ── カード ── */
-    .card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-    }
-    .card-title {
-      font-size: 0.78em;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .card-title::before {
-      content: '';
-      display: inline-block;
-      width: 3px; height: 12px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-
-    /* ── 入力 ── */
-    .input-wrap {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .input {
-      flex: 1;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      padding: 10px 13px;
-      font-size: 0.95em;
-      font-family: inherit;
-      outline: none;
-      transition: border 0.15s;
-    }
-    .input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-    }
-    .input::placeholder { color: var(--muted); }
-
-    input[type="date"].input {
-      color-scheme: dark;
-      width: 100%;
-    }
-
-    /* ── ボタン ── */
-    .btn {
-      padding: 10px 18px;
-      border-radius: 8px;
-      border: none;
-      font-family: inherit;
-      font-size: 0.88em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
-      white-space: nowrap;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn-primary:hover { background: #2563eb; }
-    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-secondary {
-      background: var(--bg3);
-      color: var(--muted2);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover { background: #1f2d42; color: var(--text); }
-
-    .btn-submit {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(90deg, var(--accent), #6366f1);
-      color: #fff;
-      font-size: 0.95em;
-      font-weight: 700;
-      border-radius: 8px;
-      border: none;
-      font-family: inherit;
-      cursor: pointer;
-      transition: opacity 0.15s;
-      margin-top: 4px;
-    }
-    .btn-submit:hover { opacity: 0.88; }
-    .btn-submit:disabled { opacity: 0.35; cursor: not-allowed; }
-
-    /* ── 日付行 ── */
-    .meta-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 4px;
-    }
-    .meta-field {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .field-label {
-      font-size: 0.75em;
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    /* ── 候補リスト ── */
-    .candidates {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-    .candidate {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .candidate:hover {
-      border-color: var(--accent);
-      background: #162032;
-    }
-    .candidate-name { font-weight: 600; font-size: 0.92em; }
-    .candidate-code {
-      font-size: 0.8em;
-      color: var(--accent);
-      background: rgba(59,130,246,0.1);
-      border: 1px solid rgba(59,130,246,0.2);
-      padding: 1px 7px;
-      border-radius: 5px;
-      margin-left: 6px;
-      font-family: 'Inter', monospace;
-    }
-    .candidate-action {
-      font-size: 0.75em;
-      color: var(--muted);
-    }
-
-    /* ── 確定バー ── */
-    .resolved-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(59,130,246,0.06);
-      border: 1px solid rgba(59,130,246,0.2);
-      border-radius: 8px;
-      padding: 9px 13px;
-      margin-bottom: 10px;
-      font-size: 0.88em;
-    }
-    .badge {
-      background: rgba(59,130,246,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(59,130,246,0.3);
-      font-size: 0.78em;
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: 5px;
-      white-space: nowrap;
-    }
-    #resolvedText { color: var(--muted2); }
-
-    /* ── 結果エリア ── */
-    .result-area {
-      min-height: 80px;
-    }
-    #result {
-      color: var(--muted2);
-      font-size: 0.88em;
-      line-height: 1.6;
-    }
-    #result.error { color: var(--red); }
-
-    /* ── フッター ── */
-    .contact-wrap {
-      text-align: center;
-      padding: 8px 0 4px;
-    }
-    .contact-link {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 0.85em;
-      opacity: 0.8;
-    }
-    .contact-link:hover { opacity: 1; }
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.75em;
-      padding: 10px 0 24px;
-    }
-  </style>
 </head>
 <body>
 
-  <!-- トップバー -->
+  <!-- TOP BAR -->
   <div class="topbar">
-    <div class="topbar-logo">
-      <div class="icon">📈</div>
-      日本株購入検討ツール
-      <span class="topbar-badge">Beta</span>
+    <div class="topbar-brand">
+      <div class="topbar-logo">株</div>
+      <span class="topbar-title">JP Stock Analyzer</span>
     </div>
-    <span id="dictStatus">銘柄辞書: 読み込み中…</span>
+    <span class="topbar-tag">Beta</span>
   </div>
 
   <div class="container">
 
+    <!-- HERO -->
+    <header class="hero">
+      <h1>日本株 <span class="accent">購入検討ツール</span></h1>
+      <p class="sub">銘柄名または証券コードを入力してください。ゆるい入力でも候補を自動補正します。</p>
+    </header>
+
     <!-- 銘柄入力 -->
-    <div class="card">
-      <div class="card-title">銘柄検索</div>
-      <div class="input-wrap">
+    <section class="card">
+      <div class="card-header">
+        <div class="card-icon">🔍</div>
+        <span class="card-title">銘柄検索</span>
+      </div>
+
+      <label for="tickerInput" class="label">銘柄（名称 / コード）</label>
+      <div class="row">
         <input id="tickerInput" class="input" type="text"
           placeholder="例：三菱重 / 7011 / トヨタ" autocomplete="off" />
-        <button id="btnResolve" class="btn btn-secondary" type="button">候補検索</button>
+        <button id="btnResolve" class="btn secondary" type="button">候補検索</button>
+        <button id="btnAnalyze" class="btn primary" type="button">送信</button>
       </div>
-      <div class="meta-row">
-        <div class="meta-field">
-          <span class="field-label">評価日（任意）</span>
-          <input id="asOf" class="input" type="date" />
+
+      <div class="row2">
+        <div class="field">
+          <label for="asOf" class="label small">評価日（任意）</label>
+          <input id="asOf" class="input small" type="date" />
+        </div>
+        <div class="field">
+          <label for="mode" class="label small">モード（任意）</label>
+          <select id="mode" class="input small">
+            <option value="B" selected>B（標準）</option>
+            <option value="A">A（詳細）</option>
+            <option value="C">C（簡易）</option>
+          </select>
         </div>
       </div>
-    </div>
+
+      <div class="dict-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="dictStatus">銘柄辞書: 読み込み中…</span>
+      </div>
+    </section>
 
     <!-- 候補 -->
-    <div class="card">
-      <div class="card-title">候補一覧</div>
-      <p style="font-size:0.82em; color:var(--muted); margin-bottom:12px;">
-        入力に近い候補を表示します。候補をクリックして確定してください。
-      </p>
-      <div id="candidates" class="candidates"></div>
-      <div class="resolved-bar">
-        <span class="badge">確定</span>
-        <span id="resolvedText">未選択</span>
+    <section class="card">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <span class="card-title">候補一覧</span>
       </div>
-      <button id="btnAnalyze" class="btn-submit" type="button">📊 分析を送信する</button>
-    </div>
+      <p class="sub">入力に近い候補を表示します。候補をクリックすると確定します。</p>
+      <div id="candidates" class="candidates"></div>
+      <div class="resolved">
+        <div class="resolved-bar">
+          <span class="badge">確定</span>
+          <span id="resolvedText">未選択</span>
+        </div>
+      </div>
+    </section>
 
     <!-- 分析結果 -->
-    <div class="card">
-      <div class="card-title">分析結果</div>
-      <p style="font-size:0.82em; color:var(--muted); margin-bottom:14px;">
-        選択した銘柄を評価します。評価には15秒程度かかります。
-      </p>
-      <div class="result-area">
-        <div id="result">(まだ結果はありません)</div>
+    <section class="card">
+      <div class="card-header">
+        <div class="card-icon">📈</div>
+        <span class="card-title">分析結果</span>
       </div>
+      <p class="sub">選択した銘柄を評価します。評価には15秒程度かかります。</p>
+      <div id="result" class="result">(まだ結果はありません)</div>
+    </section>
+
+    <!-- CONTACT & FOOTER -->
+    <div class="contact-wrap">
+      <a href="https://ig.me/m/chochoporice" class="contact-link">📩 お問い合わせはこちら</a>
     </div>
+    <footer class="footer">© 2025 Toshiyuki Oosawa — 無断複製・商用利用禁止</footer>
 
   </div>
 
-  <!-- お問い合わせ -->
-  <div class="contact-wrap">
-    <a href="https://ig.me/m/chochoporice" class="contact-link">📩 お問い合わせはこちら</a>
-  </div>
-  <footer class="footer">© 2025 Toshiyuki Oosawa — 無断複製・商用利用禁止</footer>
-
+  <!-- ステータスドット制御 -->
+  <script>
+    const _dot = document.getElementById("statusDot");
+    const _st  = document.getElementById("dictStatus");
+    new MutationObserver(() => {
+      const t = _st.textContent;
+      _dot.className = t.includes("完了") ? "status-dot ok"
+                     : t.includes("失敗") ? "status-dot err"
+                     : "status-dot";
+    }).observe(_st, { childList: true, characterData: true, subtree: true });
+  </script>
   <script src="./app.js"></script>
 </body>
 </html>
